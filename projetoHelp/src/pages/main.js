@@ -1,98 +1,89 @@
-import React from 'react';
-import {Component} from 'react';
+import React, { useState, useEffect } from 'react'; 
 import {
-  SafeAreaView,
+  Button,
+  ActivityIndicator,
   StyleSheet,
-  ScrollView,
-  View,
   Text,
-  StatusBar,
+  View,
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-
+import Autocomplete from 'react-native-autocomplete-input'; 
+//https://www.reactnativeschool.com/migrating-from-component-state-to-hooks-for-a-fetch-request
 import {
-  Header,
-  LearnMoreLinks,
   Colors,
-  DebugInstructions,
-  ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import api from "../services/api";
 import Constants from 'expo-constants';
 
-const DATA = [
-  {
-    id: '1',
-    title: 'Pergunta 1',
-    description: "esta é a descricao da pergunta 1 muito longa e complexa",
-  },
-  {
-    id: '2',
-    title: 'Pergunta 2',
-    description: "esta é a descricao da pergunta 2 muito longa e complexa",
-  },
-  {
-    id: '3',
-    title: 'Pergunta 3',
-    description: "esta é a descricao da pergunta 3 muito longa e complexa",
-  },
-  {
-    id: '4',
-    title: 'Pergunta 4',
-    description: "esta é a descricao da pergunta 4 muito longa e complexa",
-  },
-  {
-    id: '5',
-    title: 'Pergunta 5',
-    description: "esta é a descricao da pergunta 5 muito longa e complexa",
-  },
-  {
-    id: '6',
-    title: 'Pergunta 6',
-    description: "esta é a descricao da pergunta 6 muito longa e complexa",
-  },
-];
-function Item({ title, description }) {
+function Itens({ title, deion }) {
   return (
     <View style={styles.sectionContainer}>
       <Text style={styles.sectionTitle}>{title}</Text>
-      <Text style={styles.sectionDescription}>{description}</Text>
+      <Text style={styles.sectionDeion}>{deion}</Text>
       <TouchableOpacity onPress={()=>{}}>
         <Text style={styles.productButton}>Entrar</Text>
       </TouchableOpacity>
     </View>
   );
 }
-  export default class Main extends Component{
-    static navigationOptions = {
-      title: "Ajuda"
-    };
-    /*
-    componentDidMount(){
-      this.loadItens();
-    }
-    loadItens = async () =>{
-      const response = await api.get('/products');
-      const {docs} = response.data;
-    };*/
-    render(){
+
+const useSwapiPeople = () => {
+  const [people, setPeople] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+
+
+  useEffect(() => {
+      setLoading(true);
+      fetch(`https://swapi.co/api/people?page=${page}`)
+        .then(res => res.json())
+        .then(res => {
+          setPeople([...people, ...res.results]);
+          setLoading(false);
+        });
+    },[page]);
+  
+  const loadMore = () => {
+    setPage(page + 1);
+  };
+  
+  return {
+    people,
+    loading,
+    loadMore,
+  };
+};
+
+  export default function Main() {
+    const { people, 
+      loading, 
+      loadMore,
+     } = useSwapiPeople();
       return(
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-            <SafeAreaView style={styles.container}>
+            <View style={styles.container}>
+              <Autocomplete>
+                <Text>
+                  
+                </Text>
+              </Autocomplete>
               <FlatList
-                data={DATA}
-                renderItem={({ item }) => <Item title={item.title} description={item.description} />}
-                keyExtractor={item => item.id}
+                data={people}
+                renderItem={({ item }) => <Itens title={item.name} deion={item.homeworld} />}
+                keyExtractor={item => item.url}
+                ListFooterComponent={
+                  loading ? (
+                    <ActivityIndicator />
+                  ) : (
+                    <Button title="Carregar Mais" onPress={loadMore} />
+                  )
+                }
               />
-            </SafeAreaView>
-        </ScrollView>
-          
-      );
-    }
-    
+            </View>
+          );
+  };
+  Main.navigationOptions = {
+    title: "Ajuda"
   };
   const styles = StyleSheet.create({
     scrollView: {
@@ -125,7 +116,7 @@ function Item({ title, description }) {
       fontWeight: '600',
       color: Colors.black,
     },
-    sectionDescription: {
+    sectionDeion: {
       marginTop: 8,
       fontSize: 18,
       fontWeight: '400',
@@ -143,6 +134,3 @@ function Item({ title, description }) {
       textAlign: 'right',
     },
   });
-  
-
-  
