@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'; 
+import Autocomplete from 'react-native-autocomplete-input';
+import React, { useState, useEffect, useRef } from 'react'; 
 import {
   StatusBar,
   Button,
@@ -10,6 +11,8 @@ import {
   TouchableOpacity,
   TextInput,
   SafeAreaView,
+  Dimensions,
+  PixelRatio,
 } from 'react-native';
 //https://www.reactnativeschool.com/migrating-from-component-state-to-hooks-for-a-fetch-request
 import Constants from 'expo-constants';
@@ -25,19 +28,16 @@ function Itens({ title, deion }) {
     </View>
   );
 }
-
 const useSwapiPeople = () => {
   const [people, setPeople] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-
-
+  
   useEffect(() => {
       setLoading(true);
       fetch(`https://swapi.co/api/people?page=${page}`)
         .then(res => res.json())
         .then(res => {
-          setPeople([...people, []]);
           setPeople([...people, ...res.results]);
           setLoading(false);
         });
@@ -53,48 +53,77 @@ const useSwapiPeople = () => {
     loadMore,
   };
 };
-
-const useSwapiSearch = () => {
-  const [text, setText] = useState({});
-  const [options, setOptions] = useState([]);
-
-  useEffect(() => {
-    fetch(`https://swapi.co/api/people?search=${text}`)
-    .then(res => res.json())
-    .then(res =>{
-        setOptions(...options,...res.results);
-    });
-  },[]);
-
-  return {
-    text,
-    options,
-  };
+const useSwapiSearch = () =>{
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const handleChange = event => {
+     setSearchTerm(event.target.value);
+   };
+   useEffect(() => {
+     setSearchResults([]);
+     fetch(`https://swapi.co/api/people?search=${searchTerm}`)
+     .then(res => res.json())
+     .then(res =>{
+       setSearchResults(...searchResults,...res.results);
+     });
+   },[searchTerm]);
+   return{
+    searchTerm,
+    searchResults,
+    handleChange,
+   };
 };
 
+function Auto () {
+ const{
+  searchTerm,
+  searchResults,
+  handleChange,
+ } = useSwapiSearch();
+
+  return(
+    <TextInput style={styles.input} 
+    underlineColorAndroid="#FFF" 
+    placeholderTextColor="#C0C0C0" 
+    placeholder="Procurar"
+    onChange = {handleChange}
+    value = {searchTerm}
+    renderItem={({ searchResults }) => ( 
+      <TouchableOpacity onPress={() => ({ search: searchResults.name })}>
+        <Text style={styles.itemText}>
+          {searchResults.name}
+        </Text>
+      </TouchableOpacity>
+    )}
+    />   
+  );
+}
   export default function Main() {
     const { people, 
       loading, 
       loadMore,
      } = useSwapiPeople();
-     const {text,
-      options
-    } = useSwapiSearch();
+     const{
+      searchTerm,
+      searchResults,
+      handleChange,
+     } = useSwapiSearch();
       return(
         //Texto Ajuda enquanto nao tem a navegação
-              <View>
+        //SafeAreaView Funciona no IOS mas não no android <Auto />
+              <View style={styles.screen}>
                 <StatusBar backgroundColor="#DA552F" barStyle="light-content" />
                 <View>
-                  <Text style={styles.header}>Ajuda</Text>
+                  <Text style={styles.header}>Ajuda </Text>
                 </View>
-                <View >
-                  <TextInput style={styles.input} underlineColorAndroid="#FFF" placeholderTextColor="#C0C0C0" placeholder="Procurar"/>
+                <View style={styles.container}>
+                  <Auto />
                 </View>
                 <SafeAreaView style={styles.container}>
                   <FlatList
                     data={people}
-                    renderItem={({ item }) => <Itens title={item.name} deion={item.homeworld} />}
-                    keyExtractor={item => item.url}
+                    keyExtractor={(item) => item.url}
+                    renderItem={({ item, index }) => <Itens id={index} title={item.name} deion={item.homeworld} />}
                     ListFooterComponent={
                       loading ? (
                         <ActivityIndicator />
@@ -117,8 +146,12 @@ const useSwapiSearch = () => {
   };
   const styles = StyleSheet.create({
     container: {
-      marginTop: Constants.statusBarHeight,
-      marginBottom: StatusBar.currentHeight,
+      paddingTop: Constants.statusBarHeight,
+    },
+    screen:
+    {
+      marginTop: 0,
+      marginBottom: (100),
     },
     scrollView: {
       backgroundColor: "#FFF",
@@ -137,6 +170,7 @@ const useSwapiSearch = () => {
       padding:0,
       paddingLeft:15,
       paddingRight:15,
+      borderTopColor: "#FFF",
       backgroundColor: "#DA552F",
     },
     autocompleteContainer: {
