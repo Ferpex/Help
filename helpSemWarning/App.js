@@ -53,6 +53,7 @@ const useSwapiPeople = () => {
     loadMore,
   };
 };
+/*
 const useSwapiSearch = () =>{
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -97,27 +98,30 @@ function Auto () {
     )}
     />   
   );
-}
+}*/
   export default function Main() {
     const { people, 
       loading, 
       loadMore,
      } = useSwapiPeople();
-     const{
+     /*const{
       searchTerm,
       searchResults,
       handleChange,
-     } = useSwapiSearch();
+     } = useSwapiSearch();*/
       return(
+        //Comentário de multiplas linha shift + alt + a
         //Texto Ajuda enquanto nao tem a navegação
         //SafeAreaView Funciona no IOS mas não no android <Auto />
+        /*
+                <View style={styles.container}>
+                  <Auto />
+                </View>
+        */
               <View style={styles.screen}>
                 <StatusBar backgroundColor="#DA552F" barStyle="light-content" />
                 <View>
                   <Text style={styles.header}>Ajuda </Text>
-                </View>
-                <View style={styles.container}>
-                  <Auto />
                 </View>
                 <SafeAreaView style={styles.container}>
                   <FlatList
