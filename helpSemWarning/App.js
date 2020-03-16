@@ -1,4 +1,5 @@
 import Autocomplete from 'react-native-autocomplete-input';
+//Autocomplete da api não funciona direito, não é clicavel
 import React, { useState, useEffect, useRef } from 'react'; 
 import {
   StatusBar,
