@@ -1,4 +1,5 @@
 import Autocomplete from 'react-native-autocomplete-input';
+//Autocomplete da api não funciona direito, não é clicavel
 import React, { useState, useEffect, useRef } from 'react'; 
 import { Freshchat, FreshchatConfig, FreshchatUser } from 'react-native-freshchat-sdk';
 const APP_ID = 'ea1ee161-936d-4ff9-9c6e-0aa58391fb4e';
@@ -131,15 +132,20 @@ const useSwapiSearch = () =>{
       loading, 
       loadMore,
      } = useSwapiPeople();
-     /*
-     const{
+     /*const{
       searchTerm,
       searchResults,
       handleChange,
      } = useSwapiSearch();*/
       return(
+        //Comentário de multiplas linha shift + alt + a
         //Texto Ajuda enquanto nao tem a navegação
         //SafeAreaView Funciona no IOS mas não no android <Auto />
+        /*
+                <View style={styles.container}>
+                  <Auto />
+                </View>
+        */
               <View style={styles.screen}>
                 <StatusBar backgroundColor="#DA552F" barStyle="light-content" />
                 <View>
