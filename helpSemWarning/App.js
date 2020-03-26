@@ -1,5 +1,14 @@
 import Autocomplete from 'react-native-autocomplete-input';
 import React, { useState, useEffect, useRef } from 'react'; 
+import { Freshchat, FreshchatConfig, FreshchatUser } from 'react-native-freshchat-sdk';
+const APP_ID = 'ea1ee161-936d-4ff9-9c6e-0aa58391fb4e';
+const APP_KEY = 'edfb0d0e-a1db-43ed-8693-007b1d73a47a';
+var freshchatConfig = new FreshchatConfig(APP_ID, APP_KEY);
+freshchatConfig.teamMemberInfoVisible = true;
+freshchatConfig.cameraCaptureEnabled = true;
+freshchatConfig.gallerySelectionEnabled = true;
+freshchatConfig.responseExpectationEnabled = true;
+Freshchat.init(freshchatConfig);
 import {
   StatusBar,
   Button,
@@ -15,7 +24,25 @@ import {
   PixelRatio,
 } from 'react-native';
 //https://www.reactnativeschool.com/migrating-from-component-state-to-hooks-for-a-fetch-request
+
+//Freshchat
 import Constants from 'expo-constants';
+var freshchatUser = new FreshchatUser();
+freshchatUser.firstName = "Fernando";
+freshchatUser.lastName = "Santos";
+freshchatUser.email = "fernandowsantos@hotmail.com";
+freshchatUser.phoneCountryCode = "+55";
+freshchatUser.phone = "18996790901";
+Freshchat.setUser(freshchatUser, (error) => {
+    console.log(error);
+});
+
+var userPropertiesJson = {
+  "user_type": "Paid",
+  "plan": "Gold"
+}
+
+
 
 function Itens({ title, deion }) {
   return (
@@ -53,6 +80,7 @@ const useSwapiPeople = () => {
     loadMore,
   };
 };
+/*
 const useSwapiSearch = () =>{
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -72,9 +100,9 @@ const useSwapiSearch = () =>{
     searchResults,
     handleChange,
    };
-};
+};*/
 
-function Auto () {
+/*function Auto () {
  const{
   searchTerm,
   searchResults,
@@ -97,17 +125,18 @@ function Auto () {
     )}
     />   
   );
-}
+}*/
   export default function Main() {
     const { people, 
       loading, 
       loadMore,
      } = useSwapiPeople();
+     /*
      const{
       searchTerm,
       searchResults,
       handleChange,
-     } = useSwapiSearch();
+     } = useSwapiSearch();*/
       return(
         //Texto Ajuda enquanto nao tem a navegação
         //SafeAreaView Funciona no IOS mas não no android <Auto />
@@ -115,9 +144,6 @@ function Auto () {
                 <StatusBar backgroundColor="#DA552F" barStyle="light-content" />
                 <View>
                   <Text style={styles.header}>Ajuda </Text>
-                </View>
-                <View style={styles.container}>
-                  <Auto />
                 </View>
                 <SafeAreaView style={styles.container}>
                   <FlatList
