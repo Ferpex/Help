@@ -36,6 +36,8 @@ target 'helpSemWarning' do
 
   pod 'RNFreshchatSDK', :path => '../node_modules/react-native-freshchat-sdk'
 
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
   target 'helpSemWarningTests' do
     inherit! :search_paths
     # Pods for testing

@@ -2,6 +2,9 @@ import Autocomplete from 'react-native-autocomplete-input';
 //Autocomplete da api não funciona direito, não é clicavel
 import React, { useState, useEffect, useRef } from 'react'; 
 import { Freshchat, FreshchatConfig, FreshchatUser } from 'react-native-freshchat-sdk';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
 const APP_ID = 'ea1ee161-936d-4ff9-9c6e-0aa58391fb4e';
 const APP_KEY = 'edfb0d0e-a1db-43ed-8693-007b1d73a47a';
 var freshchatConfig = new FreshchatConfig(APP_ID, APP_KEY);
@@ -20,7 +23,6 @@ import {
   FlatList,
   TouchableOpacity,
   TextInput,
-  SafeAreaView,
   Dimensions,
   PixelRatio,
 } from 'react-native';
@@ -50,7 +52,7 @@ function Itens({ title, deion }) {
     <View style={styles.sectionContainer}>
       <Text style={styles.sectionTitle}>{title}</Text>
       <Text style={styles.sectionDeion}>{deion}</Text>
-      <TouchableOpacity onPress={()=>{}}>
+      <TouchableOpacity onPress={()=>{navigation.navigate('Chat')}}>
         <Text style={styles.productButton}>Entrar</Text>
       </TouchableOpacity>
     </View>
@@ -127,7 +129,7 @@ const useSwapiSearch = () =>{
     />   
   );
 }*/
-  export default function Main() {
+  export default function Main({navigation}) {
     const { people, 
       loading, 
       loadMore,
@@ -151,7 +153,7 @@ const useSwapiSearch = () =>{
                 <View>
                   <Text style={styles.header}>Ajuda </Text>
                 </View>
-                <SafeAreaView style={styles.container}>
+                <View style={styles.container}>
                   <FlatList
                     data={people}
                     keyExtractor={(item) => item.url}
@@ -164,7 +166,7 @@ const useSwapiSearch = () =>{
                       )
                     }
                   />
-                </SafeAreaView>
+                </View>
               </View>
           );
   };
